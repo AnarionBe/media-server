@@ -1,9 +1,17 @@
 import express from 'express'
 import fs from 'fs'
+import bodyParser from 'body-parser'
+import router from './src/router'
+
+import initDb from './src/libs/database'
 
 const app = express()
+initDb(__dirname)
 
-const CHUNK_SIZE = 10 ** 6
+app.use(bodyParser.urlencoded({ extended: true }))
+app.use(bodyParser.json())
+
+router.initApi(app)
 
 app.get('/', (req, res) => {
   res.sendFile(`${ __dirname }/index.html`)
@@ -11,7 +19,7 @@ app.get('/', (req, res) => {
 
 // Start streaming
 app.get('/video', (req, res) => {
-  const path = 'test.mp4'
+  const path = `${ __dirname }/test.mp4`
   const stream = fs.createReadStream(path)
 
   stream.pipe(res)
@@ -20,11 +28,14 @@ app.get('/video', (req, res) => {
 // Scan dir
 app.get('/dir', async (req, res) => {
   let dir = await fs.promises.opendir('./')
-  
-  for await (const dirent of dir) {
-    console.log(dirent.name)
+  let result = []
+
+  for await (const entry of dir) {
+    result.push(entry)
+    console.log(Object.keys(entry))
   }
 
+  res.status(200).send(result)
 })
 
 app.listen(3000)
