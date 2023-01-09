@@ -18,6 +18,7 @@ export default function init(dir: string) {
   if(allLibs.length) {
     LibraryModel.count = allLibs[allLibs.length - 1].id
   }
+
   LibraryModel.db = Libraries
 }
 
