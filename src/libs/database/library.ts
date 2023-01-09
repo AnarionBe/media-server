@@ -65,13 +65,16 @@ export class LibraryModel {
     this.parse(val)
   }
 
-  public async update(data: LibraryParams) {
-    await this.load()
-
+  public update(data: LibraryParams) {
     this._name = data.name ?? this._name
     this._folders = data.paths ?? this._folders
     this._mediaType = data.mediaType ?? this._mediaType
 
+    return
+  }
+
+  public addFolders(folders: Array<string>) {
+    this._folders = this._folders.concat(folders)
     return
   }
 
