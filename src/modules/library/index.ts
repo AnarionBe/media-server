@@ -27,6 +27,19 @@ router.put('/update/:id', async (req, res) => {
   }
 })
 
+router.get('/:id', async (req, res) => {
+  try {
+    const lib = new LibraryModel({ id: parseInt(req.params.id) })
+
+    await lib.load()
+
+    return res.status(200).json(lib.json)
+  } catch(e) {
+    console.log(e)
+    res.status(404).send({ error: e })
+  }
+})
+
 router.put('/update/:id/add-folders', async (req, res) => {
   try {
     const lib = new LibraryModel({ id: parseInt(req.params.id) })
